@@ -27,7 +27,7 @@ An intuitive web application built with **React**, **Vite**, **Tailwind CSS**, *
 
 To get started, clone this repository and install the necessary dependencies:
 
-```bash
+
 git clone https://github.com/your-username/profile-explorer.git
 cd profile-finder
 npm install
