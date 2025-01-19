@@ -27,20 +27,25 @@ An intuitive web application built with **React**, **Vite**, **Tailwind CSS**, *
 
 To get started, clone this repository and install the necessary dependencies:
 
-
+```
 git clone https://github.com/your-username/profile-explorer.git
 cd profile-finder
-
+```
 ## for backend:-
+```
 cd backed
 npm install
 node index.js
+```
 This will start the development server at `http://localhost:5000`.
 
-##for frontend
+
+## for frontend
+```
 cd frontend
 npm install
 npm run dev
+```
 This will start the development server at `http://localhost:5171`.
 
 ## Usage
