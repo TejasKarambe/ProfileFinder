@@ -30,7 +30,7 @@ router.post('/', upload.single('photo'), async (req, res) => {
 });
 
 // Get all locations
-app.get("/api/locations/:id", async (req, res) => {
+router.get("/api/locations/:id", async (req, res) => {
     try {
       const locationId = req.params.id; // Get the ID from the URL
   
