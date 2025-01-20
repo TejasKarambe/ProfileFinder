@@ -26,16 +26,20 @@ An intuitive web application built with **React**, **Vite**, **Tailwind CSS**, *
 ## Installation
 
 To get started, clone this repository and install the necessary dependencies:
-
+first install nodemon gloabally
 ```
-git clone https://github.com/your-username/profile-explorer.git
-cd profile-finder
+npm install -g nodemon
+```
+then
+```
+git clone https://github.com/TejasKarambe/ProfileFinder.git
+cd ProfileFinder
 ```
 ## for backend:-
 ```
 cd backed
 npm install
-node index.js
+npm start
 ```
 This will start the development server at `http://localhost:5000`.
 
