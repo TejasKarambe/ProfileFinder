@@ -37,7 +37,7 @@ cd ProfileFinder
 ```
 ## for backend:-
 ```
-cd backed
+cd backend
 npm install
 npm start
 ```
