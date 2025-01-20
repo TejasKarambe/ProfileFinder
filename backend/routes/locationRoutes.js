@@ -1,13 +1,21 @@
 import express from 'express';
 import multer from 'multer';
+import fs from 'fs';
+import path from 'path';
 import Location from '../models/Location.js';
 
 const router = express.Router();
 
+// Create uploads directory if it doesn't exist
+const uploadDir = path.resolve('public/uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 // Multer setup for file uploads
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'public/uploads/');
+        cb(null, uploadDir);
     },
     filename: (req, file, cb) => {
         cb(null, `${Date.now()}-${file.originalname}`);
@@ -20,7 +28,12 @@ const upload = multer({ storage });
 router.post('/', upload.single('photo'), async (req, res) => {
     try {
         const { name, description, location, latitude, longitude } = req.body;
-        const photoUrl = `/uploads/${req.file.filename}`;
+
+        if (!name || !description || !latitude || !longitude) {
+            return res.status(400).json({ message: 'Required fields are missing' });
+        }
+
+        const photoUrl = req.file ? `/uploads/${req.file.filename}` : null;
         const newLocation = new Location({ name, description, location, latitude, longitude, photoUrl });
         await newLocation.save();
         res.status(201).json(newLocation);
@@ -30,31 +43,21 @@ router.post('/', upload.single('photo'), async (req, res) => {
 });
 
 // Get all locations
-router.get("/api/locations/:id", async (req, res) => {
+router.get('/', async (req, res) => {
     try {
-      const locationId = req.params.id; // Get the ID from the URL
-  
-      // Query the database for the location by its ObjectId
-      const location = await Location.findById(locationId);
-  
-      if (!location) {
-        return res.status(404).json({ error: "Location not found" });
-      }
-  
-      // Send back the location data
-      res.json(location);
-    } catch (error) {
-      console.error("Error fetching location:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+        const locations = await Location.find();
+        res.status(200).json(locations);
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to fetch locations', error: err.message });
     }
-  });
-  
+});
 
 // Update a location
 router.put('/:id', upload.single('photo'), async (req, res) => {
     try {
         const { id } = req.params;
         const { name, description, location, latitude, longitude } = req.body;
+
         const updateData = { name, description, location, latitude, longitude };
 
         if (req.file) {
@@ -62,7 +65,9 @@ router.put('/:id', upload.single('photo'), async (req, res) => {
         }
 
         const updatedLocation = await Location.findByIdAndUpdate(id, updateData, { new: true });
-        if (!updatedLocation) return res.status(404).json({ message: 'Location not found' });
+        if (!updatedLocation) {
+            return res.status(404).json({ message: 'Location not found' });
+        }
 
         res.status(200).json(updatedLocation);
     } catch (err) {
@@ -75,7 +80,9 @@ router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const deletedLocation = await Location.findByIdAndDelete(id);
-        if (!deletedLocation) return res.status(404).json({ message: 'Location not found' });
+        if (!deletedLocation) {
+            return res.status(404).json({ message: 'Location not found' });
+        }
 
         res.status(200).json({ message: 'Location deleted successfully' });
     } catch (err) {
